@@ -1,0 +1,307 @@
+
+
+<!--
+************************
+ FILTER NEW POST SECTION
+************************
+-->
+<section>
+  <div class="container">
+    <div class="row">
+
+      <!--
+        FILTER INPUT BOX
+      -->
+
+      <div class="col-sm-4">
+          <div class="form-group">
+            <input ng-model="$ctrl.query" type="text" class="form-control" id="inputDefault" placeholder="filter">
+          </div>
+      </div>
+
+      <!--
+        SORT SELECT DROPDOWN
+      -->
+
+      <div class = "container">
+        <div class="row">
+
+
+          <div class="col-sm-4">
+
+            <div class="btn-group">
+
+              <select ng-model="blah" ng-options="key as value for (key , value) in $ctrl.data">
+                
+              </select>
+            <!-- <select name="selectDropDown"
+              ng-model = "sortBy"
+              ng-options = "option for option in $ctrl.options"
+              class='form-control'
+              id="sort"> -->
+
+
+
+              <!-- </select>
+              <select id="sortSelectBox" ng-model="$ctrl.orderProp">
+                <option disabled selected value="">Sort by:</option>
+                <option value= "title">Title</></option>
+                <option value= "votes">Votes</></option>
+              </select> -->
+            </div>
+          </div>
+
+
+
+
+      <!--
+        TOGGLE NEW POST BUTTON
+      -->
+
+      <div id="togglePost" class="col-sm-4 pull-right">
+        <a
+          href="#"
+          style="float: right"
+          class="btn btn-default"
+          ng-click="isReplyFormOpen = !isReplyFormOpen">
+          New post
+        </a>
+      </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+
+<!--
+************************
+ NEW POST FORM
+************************
+-->
+
+<div ng-init="isReplyFormOpen = false" ng-show="isReplyFormOpen" id="replyForm">
+  <form name="newPostForm" ng-submit="$ctrl.addPost(); isReplyFormOpen = !isReplyFormOpen" class="container" >
+    <legend>New post form</legend>
+
+    <!--*********
+      TITLE INPUT
+    *********-->
+
+      <div class="form-group">
+        <label for="Title" class="col-lg-12 control-label">Title</label>
+        <div class="col-lg-12">
+          <input
+          ng-model="$ctrl.newPost.title"
+          type="text"
+          class="form-control"
+          id="postTitle"
+          placeholder="Title"
+          required
+          ng-minlength="5"
+          ng-minlength="25">
+        </div>
+      </div>
+
+      <!--*********
+        AUTHOR INPUT
+      *********-->
+
+        <div class="form-group">
+          <label for="Author" class="col-lg-12 control-label" >Author</label>
+          <div class="col-lg-12">
+            <input
+            type="text"
+            ng-model="$ctrl.newPost.author"
+            type="text"
+            class="form-control"
+            id="postAuthor"
+            placeholder="Author"
+            required
+            ng-minlength="5"
+            ng-minlength="25">
+          </div>
+        </div>
+
+        <!--*********
+          DESCRIPTION INPUT
+        *********-->
+
+        <div class="form-group">
+          <label for="textArea" class="col-lg-12 control-label">Description</label>
+          <div class="col-lg-12">
+            <textarea
+              type="text"
+              ng-model="$ctrl.newPost.description"
+              class="form-control"
+              name="description"
+              rows="2"
+              id="textArea"
+              placeholder="description"
+              required
+              ng-minlength="3"
+              ng-minlength="75"
+              ></textarea>
+          </div>
+        </div>
+
+        <!--*********
+          IMAGE URL INPUT
+        *********-->
+
+      <div class="form-group">
+        <label  for="imgURL" class="col-lg-12 control-label">image URL</label>
+        <div class="col-lg-12">
+          <input
+            ng-model="$ctrl.newPost.imageURL"
+            type="url"
+            class="form-control"
+            id="imgURL"
+            placeholder="image URL"
+            required>
+        </div>
+        <br>
+
+        <!--******************
+          SUBMIT NEW POST BUTTON
+        ******************-->
+
+          <div class="col-sm-4">
+            <button
+              type="submit"
+              href="#"
+              class="btn btn-default"
+              ng-disabled="newPostForm.$invalid"
+              >
+              Create post
+            </button>
+          </div>
+        </div>
+  </form>
+  <br>
+</div>
+
+
+
+<!--
+************************
+ POST SECTION
+************************
+-->
+<section>
+  <div class="container">
+    <!--******************
+      ANGULAR REPEATER
+    ******************-->
+    <div
+      ng-repeat="post in $ctrl.posts | filter:$ctrl.query | orderBy:blah">
+      <div class="panel panel-default">
+        <!--******************
+          POST HEADING
+        ******************-->
+
+          <div class="panel-heading">
+            <div class="row">
+              <!--******************
+                UP/DOWN VOTES
+              ******************-->
+              <div>
+                VOTE ||
+                <a><i ng-click="post.votes = post.votes + 1"
+                ng-init="post.votes"
+                class="glyphicon glyphicon-arrow-up"></i></a>
+                <a><i ng-click="post.votes = post.votes - 1"
+                ng-init="post.votes"
+                class="glyphicon glyphicon-arrow-down"></i></a>
+                {{post.votes}}
+              </div>
+              <h3 class="panel-title">
+                {{post.title}} || Written by: {{post.author}}
+              </h3>
+
+            </div>
+
+
+          </div>
+
+            <!--************************************
+            POST IMAGE, COMMENT BUTTON AND DESCRIPTION
+            ************************************-->
+          <div class="row">
+            <!-- IMAGE -->
+            <div class="col-md-3">
+              <img class="post-image"src="{{post.imageURL}}" alt="">
+            </div>
+
+
+              <!-- DESCRIPTION -->
+              <div class="col-md-9">
+                <div class="panel-body">
+                  {{post.description}}
+                </div>
+
+
+
+              <!-- TIME STAMP! -->
+              <div class="container">
+                  Posted: <time am-time-ago="post.createdAt" title="{{ post.time | amDateFormat: 'dddd, MMMM Do YYYY, h:mm a' }}"></time>
+              <!-- COMMENTS! -->
+                || <a ng-click="toggleComments = !toggleComments">
+                {{post.comments.length}} comments
+
+                </a>
+                <br>
+                <div ng-show="toggleComments">
+                  <br>
+                  <ul ng-repeat="comment in post.comments"
+                    >
+                    <li>{{comment.content}}</li>
+                  </ul>
+                  <!-- <button
+                    ng-click="toggleCommentInput = !toggleCommentInput"
+                    type="button"
+                    class="btn btn-success text-right">
+                      😬add comment😬
+                  </button> -->
+
+                </div>
+                  <!-- COMMENT BUTTON & INPUT-->
+                  <div class="row">
+                    <div class="container">
+
+                      <div ng-show="toggleComments" class="row">
+                        <div class="container">
+                          <br>
+                          <form name="newCommentForm" ng-submit="$ctrl.addComment(post)">
+                            <input
+                            ng-model="post.newComment"
+                            type="text">
+                            <button
+                              ng-click="toggleCommentInput = !toggleCommentInput"
+                              type="submit"
+                              class="btn btn-success text-right">
+                                post comment
+                            </button>
+
+                          </form>
+                          <br>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+</section>
